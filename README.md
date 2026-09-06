@@ -1,8 +1,7 @@
-# Desi Market — Backend (Step 2)
+# Desi Market — bhiahvsh Backend (Step 2)
 
 Node.js + Express + PostgreSQL backend implementing the API structure and
-database design from the project spec (sections 24–26). This connects to
-the customer-app frontend prototype from Step 1.
+database design from the project spec (sections 2
 
 ## 1. Requirements
 
