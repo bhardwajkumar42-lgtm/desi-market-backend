@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+<title>Desi Market — हर गाँव की डिजिटल दुकान</title>
+<style>
+  @font-face{font-family:'system';src:local('Arial');}
+  :root{
+    --sand:#F7EFDE;
+    --sand-deep:#EFE3C6;
+    --paper:#FFFCF5;
+    --indigo:#22375B;
+    --indigo-2:#2E4B7A;
+    --marigold:#E7A234;
+    --marigold-deep:#C8811C;
+    --leaf:#4B7A54;
+    --brick:#B8452F;
+    --ink:#2B2418;
+    --ink-soft:#6B6252;
+    --line:#E2D5B4;
+    --white:#FFFFFF;
+    --radius-s:10px;
+    --radius-m:16px;
+    --radius-l:26px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--sand);
+    color:var(--ink);
+    font-family:'Segoe UI','Noto Sans','Mangal','Arial Unicode MS',Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4,.head-font{
+    font-family:'Segoe UI','Noto Sans',Arial,sans-serif;
+  }
+  #root{max-width:480px;margin:0 auto;min-height:100vh;background:var(--sand);position:relative;box-shadow:0 0 40px rgba(34,55,91,0.08);}
+  button{font-family:inherit;cursor:pointer;}
+  input,textarea,select{font-family:inherit;}
+  ::-webkit-scrollbar{display:none;}
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    background:linear-gradient(135deg, var(--indigo) 0%, var(--indigo-2) 100%);
+    color:var(--white);
+    padding:18px 18px 46px 18px;
+    position:relative;
+    overflow:hidden;
+  }
+  .topbar::after{
+    content:"";
+    position:absolute;
+    right:-30px; top:-30px;
+    width:140px;height:140px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(231,162,52,0.35) 0%, rgba(231,162,52,0) 70%);
+  }
+  .brandrow{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1;}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand-mark{
+    width:38px;height:38px;border-radius:11px;
+    background:var(--marigold);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;color:var(--indigo);font-size:18px;
+    flex-shrink:0;
+  }
+  .brand-name{font-size:19px;font-weight:700;line-height:1.1;}
+  .brand-tag{font-size:11px;opacity:0.75;margin-top:2px;}
+  .loc-pill{
+    display:flex;align-items:center;gap:5px;
+    background:rgba(255,255,255,0.14);
+    padding:6px 12px;border-radius:100px;
+    font-size:12.5px;white-space:nowrap;
+  }
+  .search-wrap{position:relative;z-index:1;margin-top:16px;}
+  .search-box{
+    width:100%;
+    background:var(--paper);
+    border:none;border-radius:100px;
+    padding:14px 18px 14px 44px;
+    font-size:14.5px;color:var(--ink);
+    outline:none;
+  }
+  .search-box::placeholder{color:var(--ink-soft);}
+  .search-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:16px;}
+
+  .quick-row{
+    display:grid;grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin:-28px 14px 0 14px;
+    position:relative;z-index:2;
+  }
+  .quick-item{
+    background:var(--paper);
+    border-radius:var(--radius-m);
+    padding:12px 6px 10px;
+    text-align:center;
+    box-shadow:0 6px 16px rgba(34,55,91,0.10);
+    border:none;
+  }
+  .quick-item .qi-emoji{font-size:20px;display:block;margin-bottom:4px;}
+  .quick-item .qi-label{font-size:11px;font-weight:600;color:var(--indigo);}
+
+  /* ---------- generic page ---------- */
+  .page{padding:20px 16px 96px 16px;}
+  .section-title{
+    display:flex;align-items:baseline;justify-content:space-between;
+    margin:22px 0 12px 0;
+  }
+  .section-title h2{font-size:16.5px;margin:0;color:var(--indigo);}
+  .section-title .see-all{font-size:12px;color:var(--marigold-deep);font-weight:600;border:none;background:none;}
+
+  .chip-scroll{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;}
+  .chip{
+    flex:0 0 auto;
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:100px;
+    padding:8px 15px;
+    font-size:12.5px;font-weight:600;color:var(--indigo);
+  }
+  .chip.active{background:var(--indigo);color:var(--white);border-color:var(--indigo);}
+
+  .cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  .cat-card{
+    background:var(--white);border-radius:var(--radius-m);
+    padding:12px 4px;text-align:center;border:1px solid var(--line);
+  }
+  .cat-card .cat-emoji{font-size:22px;display:block;margin-bottom:6px;}
+  .cat-card .cat-label{font-size:10.5px;font-weight:600;color:var(--ink);line-height:1.2;}
+
+  .h-scroll{display:flex;gap:12px;overflow-x:auto;padding-bottom:6px;}
+  .card{
+    background:var(--white);
+    border-radius:var(--radius-m);
+    overflow:hidden;
+    border:1px solid var(--line);
+  }
+  .card-accent{height:5px;width:100%;}
+  .acc-product{background:var(--marigold);}
+  .acc-service{background:var(--indigo-2);}
+  .acc-worker{background:var(--leaf);}
+
+  .product-card{width:132px;flex:0 0 auto;}
+  .product-thumb{
+    height:84px;background:var(--sand-deep);
+    display:flex;align-items:center;justify-content:center;font-size:30px;
+  }
+  .card-body{padding:9px 10px 12px;}
+  .p-name{font-size:12.5px;font-weight:600;line-height:1.25;margin:0 0 4px;}
+  .p-shop{font-size:10.5px;color:var(--ink-soft);margin:0 0 6px;}
+  .p-price-row{display:flex;align-items:center;justify-content:space-between;}
+  .p-price{font-size:13px;font-weight:700;color:var(--indigo);}
+  .p-unit{font-size:10px;color:var(--ink-soft);}
+  .add-btn{
+    background:var(--marigold);color:var(--indigo);border:none;
+    border-radius:8px;font-size:11px;font-weight:700;padding:5px 9px;
+  }
+
+  .shop-card{width:190px;flex:0 0 auto;}
+  .shop-thumb{
+    height:70px;background:linear-gradient(120deg,var(--marigold) 0%, var(--marigold-deep) 100%);
+    display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--white);
+  }
+  .shop-name{font-size:13px;font-weight:700;margin:0 0 3px;}
+  .shop-meta{font-size:10.5px;color:var(--ink-soft);margin:0;}
+  .rating-badge{
+    display:inline-flex;align-items:center;gap:3px;
+    background:#FCF1DA;color:var(--marigold-deep);
+    font-size:10.5px;font-weight:700;
+    padding:2px 7px;border-radius:100px;margin-top:6px;
+  }
+
+  .worker-card{width:220px;flex:0 0 auto;}
+  .worker-top{display:flex;gap:10px;padding:12px 12px 0;}
+  .worker-avatar{
+    width:46px;height:46px;border-radius:50%;
+    background:var(--indigo);color:var(--white);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:16px;flex-shrink:0;
+  }
+  .worker-name{font-size:13px;font-weight:700;margin:0;}
+  .worker-skill{font-size:11px;color:var(--ink-soft);margin:2px 0 0;}
+  .avail-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px;}
+  .avail-green{background:var(--leaf);}
+  .avail-yellow{background:var(--marigold);}
+  .avail-red{background:var(--brick);}
+  .worker-foot{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:10px 12px 12px;font-size:11px;
+  }
+  .worker-rate{font-weight:700;color:var(--indigo);font-size:12.5px;}
+
+  .verified-tag{
+    display:inline-flex;align-items:center;gap:3px;
+    font-size:9.5px;font-weight:700;color:var(--leaf);
+    background:#EAF3EB;padding:2px 6px;border-radius:100px;
+  }
+
+  .join-banner{
+    margin-top:24px;
+    background:linear-gradient(120deg, var(--leaf) 0%, #3C6644 100%);
+    border-radius:var(--radius-l);
+    padding:20px 18px;color:var(--white);
+    position:relative;overflow:hidden;
+  }
+  .join-banner::after{
+    content:"🤝";position:absolute;right:14px;bottom:8px;font-size:52px;opacity:0.18;
+  }
+  .join-banner h3{margin:0 0 6px;font-size:16px;}
+  .join-banner p{margin:0 0 12px;font-size:12px;opacity:0.9;max-width:220px;}
+  .join-btn{
+    background:var(--white);color:var(--leaf);border:none;
+    border-radius:100px;padding:9px 18px;font-size:12.5px;font-weight:700;
+  }
+
+  .bottom-nav{
+    position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+    width:100%;max-width:480px;
+    background:var(--paper);
+    border-top:1px solid var(--line);
+    display:grid;grid-template-columns:repeat(5,1fr);
+    padding:8px 4px 10px;z-index:20;
+  }
+  .nav-item{background:none;border:none;text-align:center;color:var(--ink-soft);}
+  .nav-item .nav-emoji{font-size:18px;display:block;}
+  .nav-item .nav-label{font-size:9.5px;margin-top:2px;display:block;font-weight:600;}
+  .nav-item.active{color:var(--indigo);}
+  .cart-badge{position:relative;}
+  .cart-count{
+    position:absolute;top:-4px;right:16px;
+    background:var(--brick);color:white;font-size:9px;font-weight:700;
+    width:15px;height:15px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+  }
+
+  .inner-head{
+    display:flex;align-items:center;gap:10px;
+    padding:16px 16px 12px;
+    background:var(--paper);
+    border-bottom:1px solid var(--line);
+    position:sticky;top:0;z-index:10;
+  }
+  .back-btn{
+    width:34px;height:34px;border-radius:50%;border:1px solid var(--line);
+    background:var(--white);font-size:16px;flex-shrink:0;
+  }
+  .inner-title{font-size:15.5px;font-weight:700;color:var(--indigo);margin:0;}
+  .inner-sub{font-size:11px;color:var(--ink-soft);margin:1px 0 0;}
+
+  .search-field{
+    display:flex;align-items:center;gap:8px;
+    background:var(--white);border:1px solid var(--line);
+    border-radius:100px;padding:10px 14px;margin:14px 16px 0;
+  }
+  .search-field input{border:none;outline:none;flex:1;font-size:13.5px;background:none;color:var(--ink);}
+
+  .list-col{display:flex;flex-direction:column;gap:12px;padding:14px 16px 90px;}
+  .full-card{display:flex;gap:12px;background:var(--white);border:1px solid var(--line);border-radius:var(--radius-m);padding:12px;}
+  .full-card .thumb{width:58px;height:58px;border-radius:12px;background:var(--sand-deep);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+  .full-card .info{flex:1;min-width:0;}
+  .full-card h4{margin:0 0 3px;font-size:13.5px;}
+  .full-card p{margin:0;font-size:11px;color:var(--ink-soft);}
+  .full-card .right-col{display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;}
+
+  .segment{display:flex;background:var(--sand-deep);border-radius:100px;padding:4px;margin:14px 16px 0;}
+  .segment button{flex:1;border:none;background:none;padding:8px 0;border-radius:100px;font-size:12.5px;font-weight:700;color:var(--ink-soft);}
+  .segment button.active{background:var(--indigo);color:var(--white);}
+
+  .pd-hero{height:220px;background:linear-gradient(160deg,var(--sand-deep),var(--sand));display:flex;align-items:center;justify-content:center;font-size:64px;}
+  .pd-body{padding:18px 16px 110px;}
+  .pd-title{font-size:19px;margin:0 0 4px;}
+  .pd-shop-link{font-size:12.5px;color:var(--marigold-deep);font-weight:600;margin:0 0 12px;cursor:pointer;}
+  .pd-price{font-size:23px;font-weight:800;color:var(--indigo);}
+  .pd-unit{font-size:12px;color:var(--ink-soft);margin-left:4px;}
+  .stepper{display:flex;align-items:center;gap:14px;background:var(--sand-deep);border-radius:100px;padding:6px 8px;}
+  .stepper button{width:28px;height:28px;border-radius:50%;border:none;background:var(--white);font-size:16px;font-weight:700;color:var(--indigo);}
+  .divider{height:1px;background:var(--line);margin:18px 0;}
+  .fixed-cta{
+    position:fixed;bottom:70px;left:50%;transform:translateX(-50%);
+    width:100%;max-width:480px;padding:12px 16px;
+    background:var(--paper);border-top:1px solid var(--line);
+    display:flex;gap:10px;z-index:15;
+  }
+  .btn-primary{
+    flex:1;background:var(--indigo);color:var(--white);border:none;
+    border-radius:100px;padding:13px;font-size:13.5px;font-weight:700;
+  }
+  .btn-outline{
+    background:var(--white);color:var(--indigo);border:1.5px solid var(--indigo);
+    border-radius:100px;padding:13px 18px;font-size:13.5px;font-weight:700;
+  }
+  .btn-secondary{
+    flex:1;background:var(--marigold);color:var(--indigo);border:none;
+    border-radius:100px;padding:13px;font-size:13.5px;font-weight:700;
+  }
+
+  .wp-head{
+    background:linear-gradient(135deg,var(--indigo),var(--indigo-2));
+    color:var(--white);padding:24px 16px 30px;text-align:center;
+  }
+  .wp-avatar{
+    width:76px;height:76px;border-radius:50%;background:var(--marigold);
+    color:var(--indigo);display:flex;align-items:center;justify-content:center;
+    font-size:28px;font-weight:800;margin:0 auto 10px;border:3px solid rgba(255,255,255,0.5);
+  }
+  .wp-name{font-size:18px;margin:0 0 2px;}
+  .wp-skill{font-size:12.5px;opacity:0.85;margin:0;}
+  .stat-row{display:flex;justify-content:space-around;background:var(--white);margin:-18px 16px 0;border-radius:var(--radius-m);padding:14px 6px;border:1px solid var(--line);position:relative;z-index:2;}
+  .stat-item{text-align:center;}
+  .stat-val{font-size:15px;font-weight:800;color:var(--indigo);display:block;}
+  .stat-lab{font-size:10px;color:var(--ink-soft);}
+  .info-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px dashed var(--line);font-size:12.5px;}
+  .info-row .lab{color:var(--ink-soft);}
+  .info-row .val{font-weight:600;}
+  .gallery-row{display:flex;gap:8px;overflow-x:auto;}
+  .gallery-thumb{width:80px;height:64px;border-radius:10px;background:var(--sand-deep);flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:22px;}
+  .review-card{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;}
+  .review-card .rname{font-size:12px;font-weight:700;}
+  .review-card .rtext{font-size:11.5px;color:var(--ink-soft);margin-top:3px;}
+
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(34,26,15,0.5);
+    display:flex;align-items:flex-end;justify-content:center;z-index:50;
+  }
+  .modal-sheet{
+    background:var(--paper);width:100%;max-width:480px;
+    border-radius:26px 26px 0 0;
+    padding:8px 18px 26px;
+    max-height:88vh;overflow-y:auto;
+  }
+  .sheet-handle{width:38px;height:4px;background:var(--line);border-radius:100px;margin:6px auto 14px;}
+  .modal-title{font-size:16px;margin:0 0 2px;color:var(--indigo);}
+  .modal-sub{font-size:12px;color:var(--ink-soft);margin:0 0 16px;}
+  .step-dots{display:flex;gap:6px;margin-bottom:16px;}
+  .step-dot{flex:1;height:4px;border-radius:100px;background:var(--line);}
+  .step-dot.done{background:var(--marigold);}
+  .field-label{font-size:12px;font-weight:700;color:var(--indigo);margin:14px 0 6px;display:block;}
+  .field-input{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13.5px;background:var(--white);outline:none;}
+  .field-textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13.5px;background:var(--white);outline:none;min-height:80px;resize:vertical;}
+  .slot-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .slot-btn{border:1px solid var(--line);background:var(--white);border-radius:10px;padding:9px 4px;font-size:12px;font-weight:600;color:var(--ink);}
+  .slot-btn.active{background:var(--indigo);color:var(--white);border-color:var(--indigo);}
+  .upload-box{border:1.5px dashed var(--line);border-radius:12px;padding:18px;text-align:center;font-size:12px;color:var(--ink-soft);background:var(--white);display:block;}
+  .quote-row{display:flex;justify-content:space-between;align-items:center;background:var(--white);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;}
+  .success-box{text-align:center;padding:20px 6px;}
+  .success-emoji{font-size:52px;margin-bottom:10px;}
+
+  .toast{
+    position:fixed;bottom:130px;left:50%;transform:translateX(-50%);
+    background:var(--indigo);color:var(--white);
+    padding:10px 20px;border-radius:100px;font-size:12.5px;font-weight:600;
+    z-index:60;box-shadow:0 8px 20px rgba(0,0,0,0.2);
+  }
+
+  .empty-state{text-align:center;padding:60px 20px;color:var(--ink-soft);}
+  .empty-state .ee{font-size:40px;margin-bottom:10px;}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script>
+/* ===========================================================
+   DESI MARKET — vanilla-JS single-file prototype
+   No external dependencies. No CDN. No build step.
+   =========================================================== */
+
+/* ---------- MOCK DATA ---------- */
+var PRODUCT_CATEGORIES = [
+  {id:"grocery", label:"किराना", emoji:"🛒"},
+  {id:"veg", label:"सब्ज़ी-फल", emoji:"🥬"},
+  {id:"dairy", label:"डेयरी", emoji:"🥛"},
+  {id:"clothing", label:"कपड़े", emoji:"👕"},
+  {id:"footwear", label:"जूते-चप्पल", emoji:"👡"},
+  {id:"electronics", label:"इलेक्ट्रॉनिक्स", emoji:"🔌"},
+  {id:"mobile_acc", label:"मोबाइल एक्सेसरी", emoji:"📱"},
+  {id:"household", label:"घरेलू सामान", emoji:"🏠"},
+  {id:"hardware", label:"हार्डवेयर", emoji:"🔧"},
+  {id:"construction", label:"निर्माण सामग्री", emoji:"🧱"},
+  {id:"agri", label:"कृषि उत्पाद", emoji:"🌾"},
+  {id:"beauty", label:"ब्यूटी", emoji:"💄"},
+  {id:"food", label:"खाद्य पदार्थ", emoji:"🍱"},
+  {id:"other_p", label:"अन्य", emoji:"➕"}
+];
+
+var SERVICE_CATEGORIES = [
+  {id:"raj_mistri", label:"राज मिस्त्री", emoji:"🧱"},
+  {id:"labour", label:"मजदूर", emoji:"⛏️"},
+  {id:"plumber", label:"प्लंबर", emoji:"🚰"},
+  {id:"electrician", label:"इलेक्ट्रीशियन", emoji:"💡"},
+  {id:"carpenter", label:"कारपेंटर", emoji:"🪚"},
+  {id:"painter", label:"पेंटर", emoji:"🎨"},
+  {id:"welder", label:"वेल्डर", emoji:"🔥"},
+  {id:"mechanic", label:"मैकेनिक", emoji:"🔩"},
+  {id:"mobile_repair", label:"मोबाइल रिपेयर", emoji:"📵"},
+  {id:"ac_repair", label:"AC/फ्रिज रिपेयर", emoji:"❄️"},
+  {id:"tractor", label:"ट्रैक्टर", emoji:"🚜"},
+  {id:"jcb", label:"JCB", emoji:"🏗️"},
+  {id:"agri_service", label:"कृषि सेवाएँ", emoji:"🌱"},
+  {id:"transport", label:"ट्रांसपोर्ट", emoji:"🚚"},
+  {id:"cleaning", label:"सफाई", emoji:"🧹"},
+  {id:"event", label:"इवेंट सेवाएँ", emoji:"🎪"},
+  {id:"other_s", label:"अन्य सेवा", emoji:"➕"}
+];
+
+var SHOPS = [
+  {id:"s1", name:"राम जनरल स्टोर", owner:"राम प्रसाद", village:"बिथौली", rating:4.6, products:38, opens:"7:00 AM", closes:"9:00 PM", emoji:"🏪", cat:"grocery"},
+  {id:"s2", name:"सीता किराना भंडार", owner:"सीता देवी", village:"बिथौली", rating:4.4, products:52, opens:"6:30 AM", closes:"9:30 PM", emoji:"🛍️", cat:"grocery"},
+  {id:"s3", name:"गाँव हार्डवेयर सेंटर", owner:"मोहन लाल", village:"डुमरी", rating:4.7, products:65, opens:"8:00 AM", closes:"8:00 PM", emoji:"🔩", cat:"hardware"},
+  {id:"s4", name:"न्यू फैशन कॉर्नर", owner:"अनीता कुमारी", village:"बिथौली", rating:4.3, products:44, opens:"9:00 AM", closes:"8:30 PM", emoji:"👗", cat:"clothing"},
+  {id:"s5", name:"किसान एग्रो सेंटर", owner:"विजय सिंह", village:"रामपुर", rating:4.8, products:30, opens:"7:00 AM", closes:"7:00 PM", emoji:"🌾", cat:"agri"}
+];
+
+var PRODUCTS = [
+  {id:"p1", name:"बासमती चावल (5kg)", shopId:"s1", cat:"grocery", price:420, unit:"पैकेट", emoji:"🍚", stock:24},
+  {id:"p2", name:"सरसों तेल (1L)", shopId:"s1", cat:"grocery", price:165, unit:"बोतल", emoji:"🛢️", stock:40},
+  {id:"p3", name:"ताज़ा आलू (1kg)", shopId:"s2", cat:"veg", price:22, unit:"किलो", emoji:"🥔", stock:100},
+  {id:"p4", name:"टमाटर (1kg)", shopId:"s2", cat:"veg", price:30, unit:"किलो", emoji:"🍅", stock:60},
+  {id:"p5", name:"दूध (1L)", shopId:"s2", cat:"dairy", price:56, unit:"पैकेट", emoji:"🥛", stock:30},
+  {id:"p6", name:"सीमेंट (OPC 50kg)", shopId:"s3", cat:"construction", price:410, unit:"बोरी", emoji:"🧱", stock:200},
+  {id:"p7", name:"सरिया (TMT 8mm)", shopId:"s3", cat:"construction", price:640, unit:"बंडल", emoji:"🔗", stock:50},
+  {id:"p8", name:"पेंच व कील सेट", shopId:"s3", cat:"hardware", price:90, unit:"पैकेट", emoji:"🔩", stock:80},
+  {id:"p9", name:"कॉटन कुर्ता", shopId:"s4", cat:"clothing", price:399, unit:"पीस", emoji:"👕", stock:22},
+  {id:"p10", name:"महिला साड़ी", shopId:"s4", cat:"clothing", price:750, unit:"पीस", emoji:"🥻", stock:15},
+  {id:"p11", name:"यूरिया खाद (45kg)", shopId:"s5", cat:"agri", price:266, unit:"बोरी", emoji:"🌾", stock:70},
+  {id:"p12", name:"धान बीज (उन्नत किस्म)", shopId:"s5", cat:"agri", price:180, unit:"किलो", emoji:"🌱", stock:35}
+];
+
+var WORKERS = [
+  {id:"w1", name:"रमेश मिस्त्री", cat:"raj_mistri", village:"बिथौली", exp:12, rate:900, rateType:"प्रति दिन", rating:4.8, jobs:210, avail:"green", verified:true, area:"5 किमी"},
+  {id:"w2", name:"सुरेश मिस्त्री", cat:"raj_mistri", village:"डुमरी", exp:8, rate:800, rateType:"प्रति दिन", rating:4.6, jobs:150, avail:"green", verified:true, area:"7 किमी"},
+  {id:"w3", name:"महेश मिस्त्री", cat:"raj_mistri", village:"रामपुर", exp:15, rate:1000, rateType:"प्रति दिन", rating:4.9, jobs:340, avail:"yellow", verified:true, area:"10 किमी"},
+  {id:"w4", name:"अजय कुमार", cat:"plumber", village:"बिथौली", exp:6, rate:400, rateType:"प्रति विज़िट", rating:4.5, jobs:95, avail:"green", verified:true, area:"5 किमी"},
+  {id:"w5", name:"संजय पासवान", cat:"plumber", village:"डुमरी", exp:10, rate:500, rateType:"प्रति विज़िट", rating:4.7, jobs:180, avail:"red", verified:false, area:"8 किमी"},
+  {id:"w6", name:"दिनेश राम", cat:"electrician", village:"बिथौली", exp:9, rate:450, rateType:"प्रति विज़िट", rating:4.6, jobs:140, avail:"green", verified:true, area:"6 किमी"},
+  {id:"w7", name:"मुन्ना कारपेंटर", cat:"carpenter", village:"रामपुर", exp:14, rate:850, rateType:"प्रति दिन", rating:4.7, jobs:220, avail:"green", verified:true, area:"9 किमी"},
+  {id:"w8", name:"विनोद पेंटर", cat:"painter", village:"डुमरी", exp:7, rate:700, rateType:"प्रति दिन", rating:4.4, jobs:88, avail:"yellow", verified:true, area:"7 किमी"},
+  {id:"w9", name:"राजू लेबर ग्रुप", cat:"labour", village:"बिथौली", exp:5, rate:400, rateType:"प्रति दिन", rating:4.3, jobs:60, avail:"green", verified:true, area:"4 किमी"}
+];
+
+var REVIEWS = [
+  {name:"सुनील ठाकुर", text:"बहुत अच्छा काम किया, समय पर पहुंचे और ईमानदारी से काम किया।"},
+  {name:"पूजा देवी", text:"रेट भी उचित था और काम की क्वालिटी शानदार थी।"}
+];
+
+/* ---------- HELPERS ---------- */
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
+function findCat(list, id){ for(var i=0;i<list.length;i++){ if(list[i].id===id) return list[i]; } return null; }
+function catLabel(list, id){ var c=findCat(list,id); return c ? c.label : id; }
+function shopById(id){ for(var i=0;i<SHOPS.length;i++){ if(SHOPS[i].id===id) return SHOPS[i]; } return null; }
+function productById(id){ for(var i=0;i<PRODUCTS.length;i++){ if(PRODUCTS[i].id===id) return PRODUCTS[i]; } return null; }
+function workerById(id){ for(var i=0;i<WORKERS.length;i++){ if(WORKERS[i].id===id) return WORKERS[i]; } return null; }
+function availInfo(a){
+  if(a==="green") return {text:"उपलब्ध", cls:"avail-green"};
+  if(a==="yellow") return {text:"व्यस्त", cls:"avail-yellow"};
+  return {text:"अनुपलब्ध", cls:"avail-red"};
+}
+function stars(rating){ return '<span class="rating-badge">⭐ '+rating.toFixed(1)+'</span>'; }
+
+/* ---------- APP STATE ---------- */
+var state = {
+  screen: "home",
+  params: {},
+  cart: [],              // [{productId, qty}]
+  bookingWorkerId: null,
+  bookingStep: 1,
+  bookingDate: "आज",
+  bookingSlot: null,
+  bookingProblem: "",
+  bookingLocation: "मेरा घर, बिथौली गाँव",
+  bookingPhotoName: null,
+  toast: null,
+  toastTimer: null,
+  checkoutInfo: null,
+  searchQuery: "",
+  pdQty: 1,
+  joinSelectedRole: null,
+  joinSent: false,
+  joinMobile: "",
+  joinVillage: ""
+};
+
+var root = document.getElementById("root");
+
+function go(screen, params){
+  state.screen = screen;
+  state.params = params || {};
+  if(screen === "product_detail"){ state.pdQty = 1; }
+  if(screen === "join"){ state.joinSelectedRole = null; state.joinSent = false; }
+  if(screen === "search"){ state.searchQuery = ""; }
+  render();
+  window.scrollTo(0,0);
+}
+
+function showToast(msg){
+  state.toast = msg;
+  render();
+  if(state.toastTimer) clearTimeout(state.toastTimer);
+  state.toastTimer = setTimeout(function(){ state.toast = null; render(); }, 1600);
+}
+
+function addToCart(productId, qty){
+  qty = qty || 1;
+  var found = null;
+  for(var i=0;i<state.cart.length;i++){ if(state.cart[i].productId===productId){ found = state.cart[i]; break; } }
+  if(found){ found.qty += qty; } else { state.cart.push({productId:productId, qty:qty}); }
+  showToast("कार्ट में जोड़ा गया ✅");
+}
+
+function cartCount(){
+  var c = 0;
+  for(var i=0;i<state.cart.length;i++){ c += state.cart[i].qty; }
+  return c;
+}
+
+/* ---------- SMALL RENDER HELPERS ---------- */
+function productCardHTML(p){
+  var shop = shopById(p.shopId);
+  return (
+    '<div class="card product-card" data-action="open-product" data-id="'+p.id+'">'+
+      '<div class="card-accent acc-product"></div>'+
+      '<div class="product-thumb">'+p.emoji+'</div>'+
+      '<div class="card-body">'+
+        '<p class="p-name">'+esc(p.name)+'</p>'+
+        '<p class="p-shop">'+(shop?esc(shop.name):"")+'</p>'+
+        '<div class="p-price-row">'+
+          '<div><span class="p-price">₹'+p.price+'</span><span class="p-unit">/'+esc(p.unit)+'</span></div>'+
+          '<button class="add-btn" data-action="add-cart" data-id="'+p.id+'" data-stop="1">+ डालें</button>'+
+        '</div>'+
+      '</div>'+
+    '</div>'
+  );
+}
+
+function shopCardHTML(s){
+  return (
+    '<div class="card shop-card" data-action="open-shop" data-id="'+s.id+'">'+
+      '<div class="card-accent acc-product"></div>'+
+      '<div class="shop-thumb">'+s.emoji+'</div>'+
+      '<div class="card-body">'+
+        '<p class="shop-name">'+esc(s.name)+'</p>'+
+        '<p class="shop-meta">📍 '+esc(s.village)+' • '+s.products+' प्रोडक्ट</p>'+
+        stars(s.rating)+
+      '</div>'+
+    '</div>'
+  );
+}
+
+function workerCardHTML(w, wide){
+  var av = availInfo(w.avail);
+  return (
+    '<div class="card '+(wide?'':'worker-card')+'" style="'+(wide?'width:100%;':'')+'" data-action="open-worker" data-id="'+w.id+'">'+
+      '<div class="card-accent acc-worker"></div>'+
+      '<div class="worker-top">'+
+        '<div class="worker-avatar">'+esc(w.name.charAt(0))+'</div>'+
+        '<div style="flex:1;min-width:0;">'+
+          '<p class="worker-name">'+esc(w.name)+'</p>'+
+          '<p class="worker-skill">'+esc(catLabel(SERVICE_CATEGORIES,w.cat))+' • '+w.exp+' साल अनुभव</p>'+
+          (w.verified? '<span class="verified-tag">✅ Verified</span>' : '')+
+        '</div>'+
+      '</div>'+
+      '<div class="worker-foot">'+
+        '<div><span class="avail-dot '+av.cls+'"></span><span style="color:var(--ink-soft);">'+av.text+'</span></div>'+
+        stars(w.rating)+
+      '</div>'+
+      '<div class="worker-foot" style="padding-top:0;">'+
+        '<span class="worker-rate">₹'+w.rate+' <span style="font-weight:500;font-size:10.5px;color:var(--ink-soft);">'+esc(w.rateType)+'</span></span>'+
+        '<span style="font-size:10.5px;color:var(--ink-soft);">📍 '+esc(w.area)+'</span>'+
+      '</div>'+
+    '</div>'
+  );
+}
+
+function bottomNavHTML(){
+  var s = state.screen;
+  var active = "home";
+  if(s==="search") active = "search";
+  else if(["categories_services","categories_products","worker_list","worker_profile","product_list","product_detail","shop_detail","shops"].indexOf(s) >= 0) active = "categories";
+  else if(s==="cart") active = "cart";
+  else if(s==="profile") active = "profile";
+  else if(s==="home") active = "home";
+
+  var items = [
+    {id:"home", label:"होम", emoji:"🏠"},
+    {id:"search", label:"खोजें", emoji:"🔍"},
+    {id:"categories", label:"सेवाएँ", emoji:"🛠️", target:"categories_services"},
+    {id:"cart", label:"कार्ट", emoji:"🛒"},
+    {id:"profile", label:"प्रोफाइल", emoji:"👤"}
+  ];
+  var count = cartCount();
+  var html = '<div class="bottom-nav">';
+  items.forEach(function(it){
+    var target = it.target || it.id;
+    html += '<button class="nav-item '+(active===it.id?'active':'')+'" data-action="go" data-screen="'+target+'">'+
+      '<span class="'+(it.id==='cart'?'cart-badge':'')+'">'+
+        '<span class="nav-emoji">'+it.emoji+'</span>'+
+        (it.id==='cart' && count>0 ? '<span class="cart-count">'+count+'</span>' : '')+
+      '</span>'+
+      '<span class="nav-label">'+it.label+'</span>'+
+    '</button>';
+  });
+  html += '</div>';
+  return html;
+}
+
+function innerHeaderHTML(title, sub){
+  return (
+    '<div class="inner-head">'+
+      '<button class="back-btn" data-action="go" data-screen="home">←</button>'+
+      '<div><p class="inner-title">'+esc(title)+'</p>'+(sub?'<p class="inner-sub">'+esc(sub)+'</p>':'')+'</div>'+
+    '</div>'
+  );
+}
+
+/* ---------- SCREENS ---------- */
+function homeScreenHTML(){
+  var featuredProducts = PRODUCTS.slice(0,6);
+  var featuredWorkers = WORKERS.slice(0,4);
+  var html = '';
+  html += '<div class="topbar">'+
+    '<div class="brandrow">'+
+      '<div class="brand"><div class="brand-mark">DM</div><div><div class="brand-name">Desi Market</div><div class="brand-tag">हर गाँव की डिजिटल दुकान</div></div></div>'+
+      '<div class="loc-pill">📍 बिथौली</div>'+
+    '</div>'+
+    '<div class="search-wrap" data-action="go" data-screen="search">'+
+      '<span class="search-icon">🔍</span>'+
+      '<input class="search-box" placeholder="क्या चाहिए? प्लंबर, सीमेंट, चावल..." readonly>'+
+    '</div>'+
+  '</div>';
+
+  html += '<div class="quick-row">'+
+    '<button class="quick-item" data-action="go" data-screen="categories_products"><span class="qi-emoji">🛒</span><span class="qi-label">सामान</span></button>'+
+    '<button class="quick-item" data-action="go" data-screen="categories_services"><span class="qi-emoji">🛠️</span><span class="qi-label">सेवाएँ</span></button>'+
+    '<button class="quick-item" data-action="go" data-screen="search"><span class="qi-emoji">📍</span><span class="qi-label">आस-पास</span></button>'+
+    '<button class="quick-item" data-action="go" data-screen="cart"><span class="qi-emoji">🚚</span><span class="qi-label">डिलीवरी</span></button>'+
+  '</div>';
+
+  html += '<div class="page" style="padding-top:6px;">';
+
+  html += '<div class="section-title"><h2>श्रेणियाँ</h2><button class="see-all" data-action="go" data-screen="categories_products">सभी देखें</button></div>';
+  html += '<div class="chip-scroll">';
+  PRODUCT_CATEGORIES.slice(0,8).forEach(function(c){
+    html += '<div class="chip" data-action="open-product-list" data-cat="'+c.id+'">'+c.emoji+' '+esc(c.label)+'</div>';
+  });
+  html += '</div>';
+
+  html += '<div class="section-title"><h2>नज़दीकी दुकानें</h2><button class="see-all" data-action="go" data-screen="shops">सभी देखें</button></div>';
+  html += '<div class="h-scroll">';
+  SHOPS.forEach(function(s){ html += shopCardHTML(s); });
+  html += '</div>';
+
+  html += '<div class="section-title"><h2>लोकप्रिय सामान</h2><button class="see-all" data-action="open-product-list" data-cat="">सभी देखें</button></div>';
+  html += '<div class="h-scroll">';
+  featuredProducts.forEach(function(p){ html += productCardHTML(p); });
+  html += '</div>';
+
+  html += '<div class="section-title"><h2>राज मिस्त्री व अन्य सेवाएँ</h2><button class="see-all" data-action="go" data-screen="categories_services">सभी देखें</button></div>';
+  html += '<div class="h-scroll">';
+  featuredWorkers.forEach(function(w){ html += workerCardHTML(w,false); });
+  html += '</div>';
+
+  html += '<div class="join-banner">'+
+    '<h3>🤝 Desi Market से जुड़ें</h3>'+
+    '<p>दुकानदार, राजमिस्त्री, मजदूर, प्लंबर, इलेक्ट्रीशियन — अपना काम गाँव के हज़ारों ग्राहकों तक पहुँचाएँ।</p>'+
+    '<button class="join-btn" data-action="go" data-screen="join">अभी जुड़ें</button>'+
+  '</div>';
+
+  html += '</div>';
+  return html;
+}
+
+function searchResultsInnerHTML(){
+  var q = state.searchQuery.trim().toLowerCase();
+  if(!q){
+    var suggestions = ["प्लंबर","सीमेंट","चावल","राज मिस्त्री","इलेक्ट्रीशियन"];
+    var h = '<div style="padding:18px 16px;">';
+    h += '<p style="font-size:12px;font-weight:700;color:var(--ink-soft);margin:0 0 10px;">लोकप्रिय खोज</p>';
+    h += '<div class="chip-scroll" style="flex-wrap:wrap;">';
+    suggestions.forEach(function(s){ h += '<div class="chip" data-action="set-query" data-text="'+esc(s)+'">'+esc(s)+'</div>'; });
+    h += '</div></div>';
+    return h;
+  }
+  var prod = PRODUCTS.filter(function(p){ return p.name.toLowerCase().indexOf(q) >= 0; });
+  var wrk = WORKERS.filter(function(w){ return catLabel(SERVICE_CATEGORIES,w.cat).toLowerCase().indexOf(q)>=0 || w.name.toLowerCase().indexOf(q)>=0; });
+  var shp = SHOPS.filter(function(s){ return s.name.toLowerCase().indexOf(q)>=0; });
+
+  var html = '<div class="list-col">';
+  if(wrk.length===0 && prod.length===0 && shp.length===0){
+    html += '<div class="empty-state"><div class="ee">🔍</div>"'+esc(state.searchQuery)+'" के लिए कुछ नहीं मिला</div>';
+  }
+  if(wrk.length>0){
+    html += '<p style="font-size:12px;font-weight:700;color:var(--indigo);">सेवा प्रदाता ('+wrk.length+')</p>';
+    wrk.forEach(function(w){ html += workerCardHTML(w, true); });
+  }
+  if(prod.length>0){
+    html += '<p style="font-size:12px;font-weight:700;color:var(--indigo);margin-top:8px;">सामान ('+prod.length+')</p>';
+    prod.forEach(function(p){
+      var shop = shopById(p.shopId);
+      html += '<div class="full-card" data-action="open-product" data-id="'+p.id+'">'+
+        '<div class="thumb">'+p.emoji+'</div>'+
+        '<div class="info"><h4>'+esc(p.name)+'</h4><p>'+esc(shop.name)+'</p></div>'+
+        '<div class="right-col"><span style="font-weight:700;color:var(--indigo);">₹'+p.price+'</span>'+
+        '<button class="add-btn" data-action="add-cart" data-id="'+p.id+'" data-stop="1">+ डालें</button></div>'+
+      '</div>';
+    });
+  }
+  if(shp.length>0){
+    html += '<p style="font-size:12px;font-weight:700;color:var(--indigo);margin-top:8px;">दुकानें ('+shp.length+')</p>';
+    shp.forEach(function(s){
+      html += '<div class="full-card" data-action="open-shop" data-id="'+s.id+'">'+
+        '<div class="thumb">'+s.emoji+'</div>'+
+        '<div class="info"><h4>'+esc(s.name)+'</h4><p>📍 '+esc(s.village)+'</p></div>'+
+        '<div class="right-col">'+stars(s.rating)+'</div>'+
+      '</div>';
+    });
+  }
+  html += '</div>';
+  return html;
+}
+
+function searchScreenHTML(){
+  var html = innerHeaderHTML("खोजें", "सामान या सेवा खोजें");
+  html += '<div class="search-field">'+
+    '<span>🔍</span>'+
+    '<input id="searchInputEl" autofocus placeholder="क्या चाहिए?" value="'+esc(state.searchQuery)+'">'+
+  '</div>';
+  html += '<div id="searchResultsEl">'+searchResultsInnerHTML()+'</div>';
+  return html;
+}
+
+function categoriesScreenHTML(mode){
+  var list = mode==="services" ? SERVICE_CATEGORIES : PRODUCT_CATEGORIES;
+  var title = mode==="services" ? "सभी सेवाएँ" : "सभी श्रेणियाँ";
+  var html = innerHeaderHTML(title);
+  html += '<div class="page" style="padding-top:16px;"><div class="cat-grid">';
+  list.forEach(function(c){
+    var action = mode==="services" ? "open-worker-list" : "open-product-list";
+    html += '<div class="cat-card" data-action="'+action+'" data-cat="'+c.id+'">'+
+      '<span class="cat-emoji">'+c.emoji+'</span><span class="cat-label">'+esc(c.label)+'</span>'+
+    '</div>';
+  });
+  html += '</div></div>';
+  return html;
+}
+
+function productListScreenHTML(cat){
+  var list = cat ? PRODUCTS.filter(function(p){return p.cat===cat;}) : PRODUCTS;
+  var title = cat ? catLabel(PRODUCT_CATEGORIES,cat) : "सभी सामान";
+  var html = innerHeaderHTML(title, list.length+" प्रोडक्ट मिले");
+  html += '<div class="list-col">';
+  if(list.length===0){
+    html += '<div class="empty-state"><div class="ee">📦</div>इस श्रेणी में अभी कोई सामान नहीं है</div>';
+  }
+  list.forEach(function(p){
+    var shop = shopById(p.shopId);
+    html += '<div class="full-card" data-action="open-product" data-id="'+p.id+'">'+
+      '<div class="thumb">'+p.emoji+'</div>'+
+      '<div class="info"><h4>'+esc(p.name)+'</h4><p>'+esc(shop.name)+' • 📍 '+esc(shop.village)+'</p></div>'+
+      '<div class="right-col"><span style="font-weight:700;color:var(--indigo);">₹'+p.price+'<span style="font-size:10px;font-weight:500;color:var(--ink-soft);">/'+esc(p.unit)+'</span></span>'+
+      '<button class="add-btn" data-action="add-cart" data-id="'+p.id+'" data-stop="1">+ डालें</button></div>'+
+    '</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
+function workerListScreenHTML(cat){
+  var list = cat ? WORKERS.filter(function(w){return w.cat===cat;}) : WORKERS.slice();
+  list = list.slice().sort(function(a,b){
+    var ag = (a.avail==="green")?1:0, bg=(b.avail==="green")?1:0;
+    if(bg!==ag) return bg-ag;
+    return b.rating - a.rating;
+  });
+  var title = cat ? catLabel(SERVICE_CATEGORIES,cat) : "सभी सेवा प्रदाता";
+  var html = innerHeaderHTML(title, list.length+" प्रदाता उपलब्ध • नज़दीकी पहले");
+  html += '<div class="list-col">';
+  if(list.length===0){
+    html += '<div class="empty-state"><div class="ee">🛠️</div>इस सेवा में अभी कोई प्रदाता नहीं है</div>';
+  }
+  list.forEach(function(w){ html += workerCardHTML(w, true); });
+  html += '</div>';
+  return html;
+}
+
+function shopListScreenHTML(){
+  var html = innerHeaderHTML("नज़दीकी दुकानें", SHOPS.length+" दुकानें");
+  html += '<div class="list-col">';
+  SHOPS.forEach(function(s){
+    html += '<div class="full-card" data-action="open-shop" data-id="'+s.id+'">'+
+      '<div class="thumb">'+s.emoji+'</div>'+
+      '<div class="info"><h4>'+esc(s.name)+'</h4><p>📍 '+esc(s.village)+' • '+s.opens+' - '+s.closes+'</p></div>'+
+      '<div class="right-col">'+stars(s.rating)+'</div>'+
+    '</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
+function shopDetailScreenHTML(shopId){
+  var shop = shopById(shopId);
+  var items = PRODUCTS.filter(function(p){return p.shopId===shop.id;});
+  var html = innerHeaderHTML(shop.name, "📍 "+shop.village);
+  html += '<div style="padding:16px;">'+
+    '<div class="shop-thumb" style="border-radius:16px;height:100px;font-size:40px;">'+shop.emoji+'</div>'+
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;">'+
+      '<div><p style="margin:0;font-weight:700;font-size:15px;">'+esc(shop.name)+'</p>'+
+      '<p style="margin:3px 0 0;font-size:11.5px;color:var(--ink-soft);">मालिक: '+esc(shop.owner)+' • ⏰ '+shop.opens+' - '+shop.closes+'</p></div>'+
+      stars(shop.rating)+
+    '</div>'+
+  '</div>';
+  html += '<div class="list-col" style="padding-top:0;">';
+  html += '<p style="font-size:12px;font-weight:700;color:var(--indigo);margin:0 0 4px;">सामान ('+items.length+')</p>';
+  items.forEach(function(p){
+    html += '<div class="full-card" data-action="open-product" data-id="'+p.id+'">'+
+      '<div class="thumb">'+p.emoji+'</div>'+
+      '<div class="info"><h4>'+esc(p.name)+'</h4><p>स्टॉक: '+p.stock+' '+esc(p.unit)+'</p></div>'+
+      '<div class="right-col"><span style="font-weight:700;color:var(--indigo);">₹'+p.price+'</span>'+
+      '<button class="add-btn" data-action="add-cart" data-id="'+p.id+'" data-stop="1">+ डालें</button></div>'+
+    '</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
+function productDetailScreenHTML(productId){
+  var product = productById(productId);
+  var shop = shopById(product.shopId);
+  var html = innerHeaderHTML("प्रोडक्ट विवरण");
+  html += '<div class="pd-hero">'+product.emoji+'</div>';
+  html += '<div class="pd-body">'+
+    '<h1 class="pd-title">'+esc(product.name)+'</h1>'+
+    '<p class="pd-shop-link" data-action="open-shop" data-id="'+shop.id+'">🏪 '+esc(shop.name)+' • 📍 '+esc(shop.village)+' ›</p>'+
+    '<div><span class="pd-price">₹'+product.price+'</span><span class="pd-unit">/ '+esc(product.unit)+'</span></div>'+
+    '<p style="font-size:12px;color:var(--ink-soft);margin-top:4px;">स्टॉक में उपलब्ध: '+product.stock+' '+esc(product.unit)+'</p>'+
+    '<div class="divider"></div>'+
+    '<p style="font-size:13px;font-weight:700;color:var(--indigo);margin-bottom:10px;">मात्रा चुनें</p>'+
+    '<div class="stepper" style="width:fit-content;">'+
+      '<button data-action="pd-qty" data-delta="-1">−</button>'+
+      '<span style="font-weight:700;">'+state.pdQty+'</span>'+
+      '<button data-action="pd-qty" data-delta="1">+</button>'+
+    '</div>'+
+    '<div class="divider"></div>'+
+    '<p style="font-size:13px;font-weight:700;color:var(--indigo);margin-bottom:6px;">विवरण</p>'+
+    '<p style="font-size:12.5px;color:var(--ink-soft);line-height:1.6;">यह उत्पाद '+esc(shop.name)+' से सीधे आपके गाँव तक पहुँचाया जाएगा। गुणवत्ता की गारंटी दुकानदार की ओर से दी जाती है।</p>'+
+  '</div>';
+  html += '<div class="fixed-cta"><button class="btn-primary" data-action="add-cart-qty" data-id="'+product.id+'">🛒 कार्ट में डालें</button></div>';
+  return html;
+}
+
+function workerProfileScreenHTML(workerId){
+  var worker = workerById(workerId);
+  var av = availInfo(worker.avail);
+  var html = innerHeaderHTML("प्रोफाइल");
+  html += '<div class="wp-head">'+
+    '<div class="wp-avatar">'+esc(worker.name.charAt(0))+'</div>'+
+    '<p class="wp-name">'+esc(worker.name)+'</p>'+
+    '<p class="wp-skill">'+esc(catLabel(SERVICE_CATEGORIES,worker.cat))+' • 📍 '+esc(worker.village)+'</p>'+
+  '</div>';
+  html += '<div class="stat-row">'+
+    '<div class="stat-item"><span class="stat-val">'+worker.exp+'</span><span class="stat-lab">साल अनुभव</span></div>'+
+    '<div class="stat-item"><span class="stat-val">'+worker.jobs+'</span><span class="stat-lab">पूरे काम</span></div>'+
+    '<div class="stat-item"><span class="stat-val">⭐'+worker.rating+'</span><span class="stat-lab">रेटिंग</span></div>'+
+  '</div>';
+  html += '<div class="page" style="padding-top:16px;">';
+  if(worker.verified){ html += '<span class="verified-tag" style="margin-bottom:10px;display:inline-flex;">✅ Verified Provider</span>'; }
+  html += '<div style="margin-top:8px;">'+
+    '<div class="info-row"><span class="lab">रेट</span><span class="val">₹'+worker.rate+' '+esc(worker.rateType)+'</span></div>'+
+    '<div class="info-row"><span class="lab">सेवा क्षेत्र</span><span class="val">'+esc(worker.area)+' तक</span></div>'+
+    '<div class="info-row"><span class="lab">उपलब्धता</span><span class="val"><span class="avail-dot '+av.cls+'"></span>'+av.text+'</span></div>'+
+    '<div class="info-row" style="border:none;"><span class="lab">टीम साइज़</span><span class="val">'+(worker.cat==="labour"?"3-5 लोग":"1-2 लोग")+'</span></div>'+
+  '</div>';
+  html += '<p style="font-size:13px;font-weight:700;color:var(--indigo);margin:18px 0 8px;">पिछले काम की तस्वीरें</p>';
+  html += '<div class="gallery-row">';
+  ["🧱","🏠","🚿","🪜"].forEach(function(e){ html += '<div class="gallery-thumb">'+e+'</div>'; });
+  html += '</div>';
+  html += '<p style="font-size:13px;font-weight:700;color:var(--indigo);margin:18px 0 8px;">ग्राहक समीक्षा</p>';
+  REVIEWS.forEach(function(r){
+    html += '<div class="review-card"><p class="rname">'+esc(r.name)+'</p><p class="rtext">'+esc(r.text)+'</p></div>';
+  });
+  html += '</div>';
+  html += '<div class="fixed-cta">'+
+    '<button class="btn-outline">📞 कॉल करें</button>'+
+    '<button class="btn-outline">💬 चैट</button>'+
+    '<button class="btn-secondary" data-action="book-open" data-id="'+worker.id+'">बुक करें</button>'+
+  '</div>';
+  return html;
+}
+
+function cartScreenHTML(){
+  var lines = state.cart.map(function(c){ return {product: productById(c.productId), qty:c.qty}; });
+  var total = lines.reduce(function(s,l){ return s + l.product.price*l.qty; }, 0);
+  var html = innerHeaderHTML("मेरा कार्ट", lines.length+" आइटम");
+  if(lines.length===0){
+    html += '<div class="empty-state"><div class="ee">🛒</div>आपका कार्ट खाली है</div>';
+    return html;
+  }
+  html += '<div class="list-col">';
+  lines.forEach(function(l, i){
+    html += '<div class="full-card">'+
+      '<div class="thumb">'+l.product.emoji+'</div>'+
+      '<div class="info"><h4>'+esc(l.product.name)+'</h4><p>₹'+l.product.price+' / '+esc(l.product.unit)+'</p></div>'+
+      '<div class="right-col"><div class="stepper" style="padding:3px 5px;gap:8px;">'+
+        '<button style="width:22px;height:22px;font-size:13px;" data-action="cart-qty" data-index="'+i+'" data-delta="-1">−</button>'+
+        '<span style="font-size:12px;font-weight:700;">'+l.qty+'</span>'+
+        '<button style="width:22px;height:22px;font-size:13px;" data-action="cart-qty" data-index="'+i+'" data-delta="1">+</button>'+
+      '</div></div>'+
+    '</div>';
+  });
+  html += '</div>';
+  html += '<div class="fixed-cta" style="flex-direction:column;gap:8px;align-items:stretch;">'+
+    '<div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700;padding:0 4px;"><span>कुल राशि</span><span style="color:var(--indigo);">₹'+total+'</span></div>'+
+    '<button class="btn-primary" data-action="checkout-order">चेकआउट करें →</button>'+
+  '</div>';
+  return html;
+}
+
+function checkoutSuccessScreenHTML(){
+  var info = state.checkoutInfo || {kind:"order"};
+  var body;
+  if(info.kind==="order"){
+    body = "दुकानदार जल्द आपके ऑर्डर की पुष्टि करेंगे। आप 'Orders' सेक्शन में स्टेटस देख सकते हैं।";
+  } else {
+    var w = workerById(info.workerId);
+    body = esc(w.name)+" जल्द आपकी बुकिंग स्वीकार करेंगे — Accept → On the way → Work Started → Completed।";
+  }
+  var html = '<div class="page" style="padding-top:60px;">'+
+    '<div class="success-box">'+
+      '<div class="success-emoji">✅</div>'+
+      '<h2 style="color:var(--indigo);">'+(info.kind==="order"?"ऑर्डर सफलतापूर्वक भेजा गया!":"बुकिंग रिक्वेस्ट भेजी गई!")+'</h2>'+
+      '<p style="font-size:12.5px;color:var(--ink-soft);line-height:1.6;max-width:280px;margin:8px auto 0;">'+body+'</p>'+
+      '<button class="btn-primary" style="margin-top:22px;width:100%;" data-action="go" data-screen="home">होम पर जाएँ</button>'+
+    '</div>'+
+  '</div>';
+  return html;
+}
+
+var JOIN_ROLES = [
+  {label:"दुकानदार", emoji:"🏪"},{label:"राजमिस्त्री", emoji:"🧱"},{label:"मजदूर", emoji:"⛏️"},
+  {label:"प्लंबर", emoji:"🚰"},{label:"इलेक्ट्रीशियन", emoji:"💡"},{label:"कारपेंटर", emoji:"🪚"},
+  {label:"पेंटर", emoji:"🎨"},{label:"वेल्डर", emoji:"🔥"},{label:"मैकेनिक", emoji:"🔩"},
+  {label:"ट्रैक्टर मालिक", emoji:"🚜"},{label:"JCB मालिक", emoji:"🏗️"},{label:"ट्रांसपोर्ट प्रदाता", emoji:"🚚"},
+  {label:"डिलीवरी पार्टनर", emoji:"📦"},{label:"अन्य", emoji:"➕"}
+];
+
+function joinScreenHTML(){
+  var html = innerHeaderHTML("Desi Market से जुड़ें", "अपनी भूमिका चुनें");
+  if(state.joinSent){
+    html += '<div class="success-box">'+
+      '<div class="success-emoji">📨</div>'+
+      '<h2 style="color:var(--indigo);">OTP भेजा गया!</h2>'+
+      '<p style="font-size:12.5px;color:var(--ink-soft);">('+esc(state.joinSelectedRole)+' के रूप में पंजीकरण जारी है — यह प्रोटोटाइप डेमो है)</p>'+
+      '<button class="btn-primary" style="margin-top:18px;width:100%;" data-action="go" data-screen="home">होम पर जाएँ</button>'+
+    '</div>';
+    return html;
+  }
+  html += '<div class="page" style="padding-top:16px;"><div class="cat-grid">';
+  JOIN_ROLES.forEach(function(r){
+    var sel = state.joinSelectedRole === r.label;
+    html += '<div class="cat-card" style="'+(sel?'border:2px solid var(--indigo);':'')+'" data-action="join-select-role" data-role="'+esc(r.label)+'">'+
+      '<span class="cat-emoji">'+r.emoji+'</span><span class="cat-label">'+esc(r.label)+'</span>'+
+    '</div>';
+  });
+  html += '</div>';
+  if(state.joinSelectedRole){
+    html += '<div style="margin-top:20px;">'+
+      '<label class="field-label">मोबाइल नंबर</label>'+
+      '<input class="field-input" id="joinMobileEl" placeholder="10 अंकों का मोबाइल नंबर" value="'+esc(state.joinMobile)+'" data-bind="joinMobile">'+
+      '<label class="field-label">गाँव / पंचायत</label>'+
+      '<input class="field-input" id="joinVillageEl" placeholder="जैसे: बिथौली" value="'+esc(state.joinVillage)+'" data-bind="joinVillage">'+
+      '<button class="btn-primary" style="width:100%;margin-top:18px;" data-action="join-send-otp">OTP भेजें और आगे बढ़ें</button>'+
+      '<p style="font-size:10.5px;color:var(--ink-soft);margin-top:10px;line-height:1.5;">OTP सत्यापन के बाद आपकी प्रोफाइल Admin की समीक्षा में जाएगी। अनुमोदन के बाद प्रोफाइल लाइव होगी।</p>'+
+    '</div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function profileScreenHTML(){
+  var rows = [
+    {emoji:"📦", label:"मेरे ऑर्डर"},
+    {emoji:"🛠️", label:"मेरी बुकिंग"},
+    {emoji:"⭐", label:"मेरी समीक्षाएँ"},
+    {emoji:"🤝", label:"Desi Market से जुड़ें", go:"join"},
+    {emoji:"➕", label:"Add Partner (किसी को जोड़ें)", go:"join"},
+    {emoji:"💬", label:"सहायता / शिकायत"},
+    {emoji:"⚙️", label:"सेटिंग्स"}
+  ];
+  var html = '<div class="topbar" style="padding-bottom:26px;">'+
+    '<div class="brand"><div class="brand-mark">👤</div><div><div class="brand-name">नमस्ते, ग्राहक जी</div><div class="brand-tag">📍 बिथौली गाँव</div></div></div>'+
+  '</div>';
+  html += '<div class="page" style="padding-top:10px;">';
+  rows.forEach(function(r){
+    html += '<div class="info-row" style="cursor:pointer;" '+(r.go?('data-action="go" data-screen="'+r.go+'"'):'')+'>'+
+      '<span class="lab" style="font-size:13.5px;color:var(--ink);">'+r.emoji+'&nbsp;&nbsp;'+esc(r.label)+'</span>'+
+      '<span style="color:var(--ink-soft);">›</span>'+
+    '</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
+/* ---------- BOOKING MODAL ---------- */
+function bookingModalHTML(){
+  if(!state.bookingWorkerId) return '';
+  var worker = workerById(state.bookingWorkerId);
+  var step = state.bookingStep;
+  var slots = ["9 - 11 AM","11 - 1 PM","1 - 3 PM","3 - 5 PM","5 - 7 PM","कल सुबह"];
+  var html = '<div class="modal-overlay" data-action="book-close-overlay">'+
+    '<div class="modal-sheet" data-stop="1">'+
+    '<div class="sheet-handle"></div>'+
+    '<p class="modal-title">बुकिंग करें — '+esc(worker.name)+'</p>'+
+    '<p class="modal-sub">'+esc(catLabel(SERVICE_CATEGORIES,worker.cat))+' • '+esc(worker.village)+'</p>'+
+    '<div class="step-dots">';
+  [1,2,3].forEach(function(n){ html += '<div class="step-dot '+(step>=n?'done':'')+'"></div>'; });
+  html += '</div>';
+
+  if(step===1){
+    html += '<label class="field-label">📍 सेवा कहाँ चाहिए?</label>'+
+      '<input class="field-input" id="bookingLocationEl" value="'+esc(state.bookingLocation)+'" data-bind="bookingLocation">'+
+      '<label class="field-label">📅 दिन चुनें</label><div class="slot-grid">';
+    ["आज","कल","परसों"].forEach(function(d){
+      html += '<button class="slot-btn '+(state.bookingDate===d?'active':'')+'" data-action="book-set-date" data-date="'+d+'">'+d+'</button>';
+    });
+    html += '</div><label class="field-label">⏰ समय चुनें</label><div class="slot-grid">';
+    slots.forEach(function(s){
+      html += '<button class="slot-btn '+(state.bookingSlot===s?'active':'')+'" data-action="book-set-slot" data-slot="'+esc(s)+'">'+esc(s)+'</button>';
+    });
+    html += '</div><div style="margin-top:20px;"><button class="btn-primary" style="width:100%;" '+(state.bookingSlot?'':'disabled')+' data-action="book-step" data-step="2">आगे बढ़ें</button></div>';
+  } else if(step===2){
+    html += '<label class="field-label">🛠️ काम की जानकारी लिखें</label>'+
+      '<textarea class="field-textarea" id="bookingProblemEl" placeholder="जैसे: बाथरूम का नल टपक रहा है, ठीक करवाना है" data-bind="bookingProblem">'+esc(state.bookingProblem)+'</textarea>'+
+      '<label class="field-label">📷 फोटो जोड़ें (वैकल्पिक)</label>'+
+      '<label class="upload-box">'+(state.bookingPhotoName ? '✅ '+esc(state.bookingPhotoName) : '📤 फोटो चुनने के लिए टैप करें')+
+      '<input type="file" accept="image/*" style="display:none;" data-action="book-photo"></label>'+
+      '<div style="margin-top:20px;display:flex;gap:10px;">'+
+      '<button class="btn-outline" data-action="book-step" data-step="1">पीछे</button>'+
+      '<button class="btn-primary" data-action="book-step" data-step="3">आगे बढ़ें</button></div>';
+  } else if(step===3){
+    html += '<label class="field-label">सारांश देखें</label>'+
+      '<div class="quote-row"><span>वर्कर</span><span style="font-weight:700;">'+esc(worker.name)+'</span></div>'+
+      '<div class="quote-row"><span>दिन / समय</span><span style="font-weight:700;">'+esc(state.bookingDate)+', '+esc(state.bookingSlot||"")+'</span></div>'+
+      '<div class="quote-row"><span>अनुमानित रेट</span><span style="font-weight:700;">₹'+worker.rate+' '+esc(worker.rateType)+'</span></div>';
+    if(state.bookingProblem){
+      html += '<div class="quote-row"><span>काम</span><span style="font-weight:700;text-align:right;max-width:60%;">'+esc(state.bookingProblem)+'</span></div>';
+    }
+    html += '<p style="font-size:11px;color:var(--ink-soft);margin-top:10px;">पक्का बिल/रेट काम देखने के बाद वर्कर द्वारा बताया जाएगा। बड़े काम के लिए आप एक से अधिक वर्कर से कोटेशन भी माँग सकते हैं।</p>'+
+      '<div style="margin-top:16px;display:flex;gap:10px;">'+
+      '<button class="btn-outline" data-action="book-step" data-step="2">पीछे</button>'+
+      '<button class="btn-primary" data-action="book-confirm">बुकिंग भेजें ✅</button></div>';
+  }
+  html += '</div></div>';
+  return html;
+}
+
+/* ---------- MAIN RENDER ---------- */
+function screenHTML(){
+  switch(state.screen){
+    case "home": return homeScreenHTML();
+    case "search": return searchScreenHTML();
+    case "categories_products": return categoriesScreenHTML("products");
+    case "categories_services": return categoriesScreenHTML("services");
+    case "product_list": return productListScreenHTML(state.params.cat || null);
+    case "worker_list": return workerListScreenHTML(state.params.cat || null);
+    case "shops": return shopListScreenHTML();
+    case "shop_detail": return shopDetailScreenHTML(state.params.id);
+    case "product_detail": return productDetailScreenHTML(state.params.id);
+    case "worker_profile": return workerProfileScreenHTML(state.params.id);
+    case "cart": return cartScreenHTML();
+    case "join": return joinScreenHTML();
+    case "profile": return profileScreenHTML();
+    case "success": return checkoutSuccessScreenHTML();
+    default: return homeScreenHTML();
+  }
+}
+
+function render(){
+  var html = screenHTML();
+  if(state.screen !== "success"){ html += bottomNavHTML(); }
+  html += bookingModalHTML();
+  if(state.toast){ html += '<div class="toast">'+esc(state.toast)+'</div>'; }
+  root.innerHTML = html;
+}
+
+/* ---------- EVENT DELEGATION ---------- */
+root.addEventListener("click", function(e){
+  var el = e.target.closest("[data-action]");
+  if(!el) return;
+  if(el.getAttribute("data-stop")) e.stopPropagation();
+  var action = el.getAttribute("data-action");
+
+  switch(action){
+    case "go":
+      go(el.getAttribute("data-screen"));
+      break;
+    case "open-product":
+      go("product_detail", {id: el.getAttribute("data-id")});
+      break;
+    case "open-shop":
+      go("shop_detail", {id: el.getAttribute("data-id")});
+      break;
+    case "open-worker":
+      go("worker_profile", {id: el.getAttribute("data-id")});
+      break;
+    case "open-product-list":
+      go("product_list", {cat: el.getAttribute("data-cat") || null});
+      break;
+    case "open-worker-list":
+      go("worker_list", {cat: el.getAttribute("data-cat") || null});
+      break;
+    case "add-cart":
+      addToCart(el.getAttribute("data-id"), 1);
+      break;
+    case "add-cart-qty":
+      addToCart(el.getAttribute("data-id"), state.pdQty);
+      go("home");
+      break;
+    case "pd-qty":
+      state.pdQty = Math.max(1, state.pdQty + parseInt(el.getAttribute("data-delta"),10));
+      render();
+      break;
+    case "cart-qty": {
+      var idx = parseInt(el.getAttribute("data-index"),10);
+      var delta = parseInt(el.getAttribute("data-delta"),10);
+      state.cart[idx].qty = Math.max(1, state.cart[idx].qty + delta);
+      render();
+      break;
+    }
+    case "checkout-order":
+      state.cart = [];
+      state.checkoutInfo = {kind:"order"};
+      go("success");
+      break;
+    case "set-query":
+      state.searchQuery = el.getAttribute("data-text");
+      render();
+      break;
+    case "book-open":
+      state.bookingWorkerId = el.getAttribute("data-id");
+      state.bookingStep = 1;
+      state.bookingDate = "आज";
+      state.bookingSlot = null;
+      state.bookingProblem = "";
+      state.bookingPhotoName = null;
+      render();
+      break;
+    case "book-close-overlay":
+      if(e.target === el){ state.bookingWorkerId = null; render(); }
+      break;
+    case "book-step":
+      state.bookingStep = parseInt(el.getAttribute("data-step"),10);
+      render();
+      break;
+    case "book-set-date":
+      state.bookingDate = el.getAttribute("data-date");
+      render();
+      break;
+    case "book-set-slot":
+      state.bookingSlot = el.getAttribute("data-slot");
+      render();
+      break;
+    case "book-confirm": {
+      var wid = state.bookingWorkerId;
+      state.bookingWorkerId = null;
+      state.checkoutInfo = {kind:"booking", workerId: wid};
+      go("success");
+      break;
+    }
+    case "join-select-role":
+      state.joinSelectedRole = el.getAttribute("data-role");
+      render();
+      break;
+    case "join-send-otp":
+      state.joinSent = true;
+      render();
+      break;
+    default:
+      break;
+  }
+});
+
+root.addEventListener("input", function(e){
+  var t = e.target;
+  if(t.id === "searchInputEl"){
+    state.searchQuery = t.value;
+    var resultsEl = document.getElementById("searchResultsEl");
+    if(resultsEl) resultsEl.innerHTML = searchResultsInnerHTML();
+    return;
+  }
+  var bind = t.getAttribute && t.getAttribute("data-bind");
+  if(bind){ state[bind] = t.value; }
+});
+
+root.addEventListener("change", function(e){
+  var el = e.target.closest('[data-action="book-photo"]');
+  if(el && el.files && el.files[0]){
+    state.bookingPhotoName = el.files[0].name;
+    render();
+  }
+});
+
+/* ---------- BOOT ---------- */
+render();
+</script>
+</body>
+</html>
